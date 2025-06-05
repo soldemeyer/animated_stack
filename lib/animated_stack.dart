@@ -7,7 +7,7 @@ class AnimatedStack extends StatefulWidget {
   final double scaleHeight;
   final Widget foregroundWidget;
   final Widget columnWidget;
-  final Widget bottomWidget;
+  final Widget? bottomWidget;
   final Color fabBackgroundColor;
   final Color? fabIconColor;
   final Color backgroundColor;
@@ -21,13 +21,15 @@ class AnimatedStack extends StatefulWidget {
   final bool preventForegroundInteractions;
   final Function()? onForegroundCallback;
   final Function()? onOpenCallback;
+  final bool showBottomWidget;
+  final AnimatedStackController? controller;
 
   const AnimatedStack({
     Key? key,
     this.scaleWidth = 60,
     this.scaleHeight = 60,
     required this.columnWidget,
-    required this.bottomWidget,
+    this.bottomWidget,
     required this.backgroundColor,
     required this.foregroundWidget,
     required this.fabBackgroundColor,
@@ -42,6 +44,8 @@ class AnimatedStack extends StatefulWidget {
     this.openAnimationCurve = const ElasticOutCurve(0.9),
     this.buttonAnimationDuration = const Duration(milliseconds: 240),
     this.slideAnimationDuration = const Duration(milliseconds: 800),
+    this.showBottomWidget = true,
+    this.controller,
   })  : assert(scaleHeight >= 40, 'scaleHeight must be at least 40'),
         assert(!(enableClickToDismiss && !preventForegroundInteractions),
             'enableClickToDismiss can only be true if preventForegroundInteractions is also true'),
@@ -52,9 +56,38 @@ class AnimatedStack extends StatefulWidget {
 }
 
 class _AnimatedStackState extends State<AnimatedStack> {
-  bool opened = false;
 
   @override
+  void initState() {
+    super.initState();
+    widget.controller?._bind(this);
+  }
+
+  bool opened = false;
+
+void _open() {
+  if (!opened) {
+    setState(() => opened = true);
+    widget.onOpenCallback?.call();
+  }
+}
+
+void _close() {
+  if (opened) {
+    setState(() => opened = false);
+    widget.onForegroundCallback?.call();
+  }
+}
+
+void _toggle() {
+  setState(() => opened = !opened);
+  if (opened) {
+    widget.onOpenCallback?.call();
+  } else {
+    widget.onForegroundCallback?.call();
+  }
+}
+
   Widget build(BuildContext context) {
     final double _width = MediaQuery.of(context).size.width;
     final double _height = MediaQuery.of(context).size.height;
@@ -63,8 +96,9 @@ class _AnimatedStackState extends State<AnimatedStack> {
 
     final double _xScale =
         (widget.scaleWidth + _fabPosition * 2) * 100 / _width;
-    final double _yScale =
-        (widget.scaleHeight + _fabPosition * 2) * 100 / _height;
+    final double _yScale = widget.showBottomWidget
+    ? (widget.scaleHeight + _fabPosition * 2) * 100 / _height
+    : 0.0;
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -77,14 +111,7 @@ class _AnimatedStackState extends State<AnimatedStack> {
           duration: widget.buttonAnimationDuration,
         ),
         backgroundColor: widget.fabBackgroundColor,
-        onPressed: () {
-          setState(() => opened = !opened);
-          if (opened) {
-            widget.onOpenCallback?.call(); 
-          } else {
-            widget.onForegroundCallback?.call(); 
-          }
-        },
+        onPressed: _toggle,
       ),
       body: Stack(
         children: <Widget>[
@@ -101,6 +128,7 @@ class _AnimatedStackState extends State<AnimatedStack> {
                     child: widget.columnWidget,
                   ),
                 ),
+                if (widget.showBottomWidget) 
                 Positioned(
                   right: widget.scaleWidth + _fabPosition * 2,
                   bottom: _fabPosition * 1.5,
@@ -300,4 +328,19 @@ class _RotateState extends State<RotateAnimation>
     _animationController.dispose();
     super.dispose();
   }
+}
+
+
+class AnimatedStackController extends ChangeNotifier {
+  _AnimatedStackState? _state;
+
+  void _bind(_AnimatedStackState state) {
+    _state = state;
+  }
+
+  void open() => _state?._open();
+
+  void close() => _state?._close();
+
+  void toggle() => _state?._toggle();
 }
