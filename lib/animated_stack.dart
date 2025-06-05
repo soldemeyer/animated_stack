@@ -20,6 +20,7 @@ class AnimatedStack extends StatefulWidget {
   final bool enableClickToDismiss;
   final bool preventForegroundInteractions;
   final Function()? onForegroundCallback;
+  final Function()? onOpenCallback;
 
   const AnimatedStack({
     Key? key,
@@ -30,6 +31,7 @@ class AnimatedStack extends StatefulWidget {
     required this.backgroundColor,
     required this.foregroundWidget,
     required this.fabBackgroundColor,
+    this.onOpenCallback,
     this.fabIconColor,
     this.onForegroundCallback,
     this.animateButton = true,
@@ -77,8 +79,10 @@ class _AnimatedStackState extends State<AnimatedStack> {
         backgroundColor: widget.fabBackgroundColor,
         onPressed: () {
           setState(() => opened = !opened);
-          if (!opened) {
-            widget.onForegroundCallback?.call();
+          if (opened) {
+            widget.onOpenCallback?.call(); 
+          } else {
+            widget.onForegroundCallback?.call(); 
           }
         },
       ),
