@@ -1,9 +1,9 @@
-# Animated Stack
+# Example for Animated Stack
 
 Custom animated stacked pages, to create customisable side menu buttons.
 Providing simple menu for sharing buttons, side menu, message sending, about page, ... etc.
 
-![](https://raw.githubusercontent.com/Emadeddin-eibo/animated_stack/master/example1.gif)  &nbsp; &nbsp; ![](https://raw.githubusercontent.com/Emadeddin-eibo/animated_stack/master/example2.gif)
+![](example1.gif) ![](example2.gif)
 
 ## Getting Started
 At first, you have to create Foreground and Background Widgets.
@@ -36,37 +36,38 @@ class MyApp extends StatelessWidget {
 
 Here's all what you can customize in this widget!
 
-## Stack attributes
+## Button attributes
 
 ```dart
 AnimatedStack(
-backgroundColor: ...,     // Background Container color
-foregroundWidget: ...,    // Foreground Container color
+    controller: ...,          //An AnimatedStackController() class can be used to create a stack controller that can be called to open or close the widget from other functions.
+                              //This can be done by creating a variable such as:
+                              //  final AnimatedStackController _stackController = AnimatedStackController();
+                              //And then calling it using _stackController.close() or _stackController.open() in your function
 
-columnWidget: ...,        // Right Widget, (use Column for best results)
-bottomWidget: ...,        // Bottom Widget, (use Row for best results)
-
-scaleHeight: 100,         // Sliding animation height, default is 60
-scaleWidth: 100,          // Sliding animation width, default is 60
-
-
-buttonIcon: ...,          // FAB icon (IconData)
-fabIconColor: ...,        // FAB icon color
-animateButton: false,     // Sometimes, we don't want to animate the button!
-fabBackgroundColor: ...,  // FAB background color
-
-slideAnimationDuration: ..., // Animation Duration, default is 800 Milliseconds
-buttonAnimationDuration: ...,// Animation Duration, default is 240 Milliseconds
-
-openAnimationCurve: ...,    // Animation Curve, default is ElasticOutCurve(0.9)
-closeAnimationCurve: ...,   // Animation Curve, default is ElasticInCurve(0.9)
-enableClickToDismiss: true, // Enable Click on Main Widget to close
-preventForegroundInteractions: true, // Prevent Clicks on Main Widget
-onForegroundCallback: () => print('on Close Callback'), // On Close Callback
-);
+    backgroundColor: ...,     // Background Container color
+    foregroundWidget: ...,    // Foreground Container color
+    
+    columnWidget: ...,        // Right Widget, (use Column for best results)
+    showBottomWidget: ...,    // Toggles if bottom widget is exposed.  If false, widget will not slide up, only left
+    bottomWidget: ...,        // Bottom Widget, (use Row for best results)
+    
+    scaleHeight: 100,         // Sliding animation height, default is 60
+    scaleWidth: 100,          // Sliding animation width, default is 60
+    
+    
+    buttonIcon: ...,          // FAB icon (IconData)
+    fabIconColor: ...,        // FAB icon color
+    animateButton: false,     // Sometimes, we don't want to animate the button!
+    fabBackgroundColor: ...,  // FAB background color
+    
+    slideAnimationDuration: ..., // Animation Duration, default is 800 Milliseconds
+    buttonAnimationDuration: ...,// Animation Duration, default is 240 Milliseconds
+    
+    openAnimationCurve: ...,    // Animation Curve, default is ElasticOutCurve(0.9)
+    closeAnimationCurve: ...,   // Animation Curve, default is ElasticInCurve(0.9)
+    );
 ```
-
-### For complete examples, check example folder
 
 ## License
 MIT License.
