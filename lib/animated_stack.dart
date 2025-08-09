@@ -3,6 +3,7 @@ library animated_stack;
 import 'package:flutter/material.dart';
 
 class AnimatedStack extends StatefulWidget {
+  final Key? mainButtonKey;
   final double scaleWidth;
   final double scaleHeight;
   final Widget foregroundWidget;
@@ -26,6 +27,7 @@ class AnimatedStack extends StatefulWidget {
 
   const AnimatedStack({
     Key? key,
+    this.mainButtonKey,
     this.scaleWidth = 60,
     this.scaleHeight = 60,
     required this.columnWidget,
@@ -102,6 +104,7 @@ void _toggle() {
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
+        key: widget.mainButtonKey,
         child: RotateAnimation(
           opened: widget.animateButton ? opened : false,
           child: Icon(
